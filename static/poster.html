@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Table QR poster</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Instrument+Serif:ital@1&family=Noto+Sans+Devanagari:wght@600&display=swap" rel="stylesheet">
+<style>
+  @page { size:A5; margin:0; }
+  :root { --accent:#e8590c; }
+  body { margin:0; font-family:"Plus Jakarta Sans","Noto Sans Devanagari",sans-serif; background:#ddd6cb; }
+  .bar { display:flex; gap:10px; justify-content:center; align-items:center; padding:14px; flex-wrap:wrap; font-size:14px; }
+  .bar button { font:inherit; font-weight:800; padding:11px 18px; border-radius:12px; border:none; background:#1c1712; color:#fff; cursor:pointer; }
+  .bar .warn { background:#fff3bf; color:#5c3c00; padding:8px 12px; border-radius:10px; max-width:520px; }
+  .poster { width:148mm; height:210mm; margin:0 auto 20px; position:relative; overflow:hidden; color:#1c1712; display:flex; flex-direction:column; align-items:center; text-align:center; padding:13mm 12mm 10mm; box-sizing:border-box;
+    background:radial-gradient(120mm 80mm at 100% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%), #fbf6ee; box-shadow:0 20px 50px rgba(0,0,0,.2); }
+  .badge { width:16mm; height:16mm; border-radius:5mm; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:9mm; }
+  .shop { margin-top:4mm; font-weight:800; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  h1 { font-size:31px; line-height:1.08; letter-spacing:-.02em; margin:3mm 0 2mm; }
+  h1 em { font-family:"Instrument Serif",serif; font-weight:400; color:var(--accent); font-size:36px; }
+  .sub { color:#6f6658; font-size:14px; margin:0 0 6mm; }
+  .qr { background:#fff; padding:5mm; border-radius:7mm; box-shadow:0 10px 30px rgba(60,40,10,.12); position:relative; }
+  .qr img { width:62mm; height:62mm; display:block; }
+  .scan { position:absolute; left:50%; bottom:-4mm; transform:translateX(-50%); background:var(--accent); color:#fff; font-weight:800; font-size:12px; padding:2mm 4mm; border-radius:99px; white-space:nowrap; }
+  .ways { display:flex; gap:3mm; margin-top:9mm; }
+  .ways span { background:#fff; border:1px solid #eee4d4; border-radius:99px; padding:2mm 4mm; font-size:13px; font-weight:700; }
+  .url { margin-top:5mm; font-size:11px; color:#9a8f80; word-break:break-all; }
+  .langs { margin-top:4mm; font-size:13px; color:#6f6658; }
+  .foot { margin-top:auto; font-size:10px; color:#9a8f80; }
+  .hidden { display:none; }
+  @media print { body { background:#fff; } .bar { display:none; } .poster { margin:0; box-shadow:none; } }
+</style>
+</head>
+<body>
+<div class="bar"><button onclick="print()">🖨 Print / Save as PDF</button><span class="warn hidden" id="warn"></span></div>
+<div class="poster">
+  <div class="badge" id="badge">☕</div>
+  <div class="shop" id="shop">…</div>
+  <h1>Loved it? Didn't?<br><em>Tell us honestly.</em></h1>
+  <p class="sub">Your Google review helps us improve, and helps others decide.</p>
+  <div class="qr"><img id="qr" alt="QR code"><div class="scan">📷 Scan with your camera</div></div>
+  <div class="ways"><span>👆 Tap</span><span>✍️ Fill</span><span>🎤 Speak</span></div>
+  <div class="url" id="url"></div>
+  <div class="langs">English · हिंदी · मराठी · under 1 minute</div>
+  <div class="foot">Honest reviews only · no rewards offered · powered by ReviewBuddy</div>
+</div>
+<script>
+const slug = location.pathname.split("/").filter(Boolean).pop();
+fetch("/api/base").then(r => r.ok ? r.json() : Promise.reject()).catch(() => ({ base:location.origin, mode:"public" })).then(({ base, mode }) => {
+  const link = base + "/r/" + slug;
+  document.getElementById("url").textContent = link;
+  const qr = document.getElementById("qr");
+  qr.onerror = () => { qr.onerror = null; qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=700x700&margin=0&ecc=M&data=" + encodeURIComponent(link); };
+  qr.src = "/api/qr.svg?data=" + encodeURIComponent(link);  // made by the app itself; online service is only a fallback
+  if (mode === "wifi") {
+    const w = document.getElementById("warn");
+    w.textContent = "📶 Test mode: this QR opens " + base + " and only works for phones on the same WiFi as this computer. Deploy online before printing for customers.";
+    w.style.display = "inline-block";
+  }
+});
+fetch("/api/shop/" + slug).then(r => r.json()).then(s => {
+  document.getElementById("shop").textContent = s.name;
+  document.getElementById("badge").textContent = s.emoji;
+  document.documentElement.style.setProperty("--accent", s.color);
+});
+</script>
+</body>
+</html>

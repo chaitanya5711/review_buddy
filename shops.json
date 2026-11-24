@@ -1,0 +1,20 @@
+[
+  {
+    "slug": "demo-cafe",
+    "name": "Demo Cafe",
+    "type": "restaurant",
+    "menu": ["Masala Chai", "Cold Coffee", "Veg Sandwich", "Paneer Wrap", "Maggi"],
+    "review_url": "https://search.google.com/local/writereview?placeid=PUT_PLACE_ID_HERE",
+    "staff_pin": "1234",
+    "baseline_reviews": 0
+  },
+  {
+    "slug": "demo-clinic",
+    "name": "Demo Clinic",
+    "type": "clinic",
+    "menu": ["General checkup", "Home visit", "Blood test", "Dressing"],
+    "review_url": "https://search.google.com/local/writereview?placeid=PUT_PLACE_ID_HERE",
+    "staff_pin": "1234",
+    "baseline_reviews": 0
+  }
+]

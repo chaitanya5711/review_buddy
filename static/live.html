@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Counter display · ReviewBuddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Instrument+Serif:ital@1&family=Noto+Sans+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --accent:#e8590c; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; overflow:hidden; }
+  body { font-family:"Plus Jakarta Sans","Noto Sans Devanagari",sans-serif; color:#fff8ee;
+    background:
+      radial-gradient(60vw 50vh at 85% 10%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 70%),
+      radial-gradient(50vw 50vh at 0% 100%, rgba(47,158,68,.25), transparent 70%), #15110d; }
+  .wrap { height:100%; display:grid; grid-template-columns:1.1fr 1fr; gap:5vw; align-items:center; padding:5vh 6vw; }
+  .brand { display:flex; align-items:center; gap:14px; font-weight:800; font-size:clamp(16px,2vw,24px); }
+  .brand i { width:clamp(44px,5vw,64px); height:clamp(44px,5vw,64px); border-radius:18px; background:var(--accent); display:flex; align-items:center; justify-content:center; font-style:normal; font-size:clamp(22px,2.6vw,34px); box-shadow:0 10px 30px color-mix(in srgb, var(--accent) 50%, transparent); }
+  h1 { font-size:clamp(34px,5.4vw,76px); line-height:1.04; letter-spacing:-.03em; margin:4vh 0 2vh; min-height:2.1em; transition:opacity .5s; }
+  h1 em { font-family:"Instrument Serif",serif; font-weight:400; color:color-mix(in srgb, var(--accent) 70%, #fff); }
+  .sub { font-size:clamp(15px,1.6vw,21px); opacity:.75; max-width:34em; line-height:1.5; }
+  .counter { margin-top:5vh; display:flex; align-items:baseline; gap:14px; }
+  .counter b { font-size:clamp(56px,8vw,120px); letter-spacing:-.04em; line-height:1; color:#8ce99a; transition:transform .3s; }
+  .counter b.bump { transform:scale(1.15); }
+  .counter span { font-size:clamp(15px,1.6vw,22px); opacity:.85; }
+  .live { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:800; letter-spacing:.12em; opacity:.8; margin-top:2vh; }
+  .live i { width:9px; height:9px; border-radius:50%; background:#ff6b6b; animation:pulse 1.4s infinite; }
+  @keyframes pulse { 50% { opacity:.25; } }
+  .feed { margin-top:2.4vh; display:flex; flex-direction:column; gap:10px; max-height:26vh; overflow:hidden; }
+  .item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:10px 14px; font-size:clamp(13px,1.3vw,17px); animation:slide .6s cubic-bezier(.2,.8,.2,1); }
+  .item .e { font-size:24px; } .item small { margin-left:auto; opacity:.6; }
+  @keyframes slide { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
+  .qrcard { justify-self:center; background:#fffaf2; color:#1c1712; border-radius:36px; padding:clamp(18px,2.6vw,36px); text-align:center; box-shadow:0 40px 90px rgba(0,0,0,.45); position:relative; }
+  .qrcard img { width:min(34vw,56vh); height:min(34vw,56vh); display:block; }
+  .scan { margin-top:16px; font-weight:800; font-size:clamp(16px,1.8vw,24px); }
+  .url { margin-top:8px; font-size:12px; color:#857a6b; word-break:break-all; }
+  .ways { display:flex; justify-content:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .ways span { background:#f3ece0; border-radius:999px; padding:6px 12px; font-weight:700; font-size:clamp(12px,1.1vw,15px); }
+  .corner { position:absolute; inset:-10px; border-radius:44px; border:3px solid var(--accent); opacity:.5; animation:breathe 3s ease-in-out infinite; pointer-events:none; }
+  @keyframes breathe { 50% { transform:scale(1.03); opacity:.15; } }
+  .foot { position:fixed; bottom:2.4vh; left:6vw; right:6vw; display:flex; justify-content:space-between; font-size:12px; opacity:.5; }
+  .full { position:fixed; top:14px; right:14px; background:rgba(255,255,255,.1); color:#fff; border:none; border-radius:12px; padding:9px 12px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+  @media (orientation:portrait) {
+    .wrap { grid-template-columns:1fr; gap:3vh; padding:5vh 7vw; align-content:center; }
+    .qrcard img { width:min(62vw,40vh); height:min(62vw,40vh); }
+    h1 { margin-top:2vh; min-height:0; } .counter { margin-top:2vh; } .feed { max-height:14vh; } .foot { display:none; }
+  }
+</style>
+</head>
+<body>
+<button class="full" id="full">⛶ Full screen</button>
+<div class="wrap">
+  <div>
+    <div class="brand"><i id="emoji">☕</i><span id="name">…</span></div>
+    <h1 id="headline">Loved it? Didn't?<br><em>Tell us honestly.</em></h1>
+    <div class="sub">Scan the code, tap or speak your feedback in English, हिंदी or मराठी, and post it on Google. Under a minute.</div>
+    <div class="counter"><b id="count">0</b><span>guests shared feedback today</span></div>
+    <div class="live"><i></i> LIVE</div>
+    <div class="feed" id="feed"></div>
+  </div>
+  <div class="qrcard">
+    <div class="corner"></div>
+    <img id="qr" alt="Scan to leave a review">
+    <div class="scan">📷 Point your camera here</div>
+    <div class="url" id="url"></div>
+    <div class="ways"><span>👆 Tap</span><span>✍️ Fill</span><span>🎤 Speak</span></div>
+  </div>
+</div>
+<div class="foot"><span>Honest reviews only · no rewards offered</span><span>ReviewBuddy</span></div>
+<script>
+const slug = location.pathname.split("/").filter(Boolean).pop();
+const $ = id => document.getElementById(id);
+const MOOD = { Excellent:["😍","loved it"], Good:["🙂","had a good time"], Okay:["😐","shared honest feedback"], "Not good":["😞","told us what to improve"], "":["💬","shared feedback"] };
+const HEAD = [
+  'Loved it? Didn\'t?<br><em>Tell us honestly.</em>',
+  'आपका अनुभव कैसा रहा?<br><em>सच-सच बताइए।</em>',
+  'तुमचा अनुभव कसा होता?<br><em>खरं सांगा.</em>',
+];
+let h = 0, last = -1;
+
+fetch("/api/base").then(r => r.ok ? r.json() : Promise.reject()).catch(() => ({ base:location.origin })).then(({ base }) => {
+  const link = base + "/r/" + slug, qr = $("qr");
+  $("url").textContent = link;
+  qr.onerror = () => { qr.onerror = null; qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=700x700&margin=0&data=" + encodeURIComponent(link); };
+  qr.src = "/api/qr.svg?data=" + encodeURIComponent(link);
+});
+
+setInterval(() => {
+  h = (h + 1) % HEAD.length; $("headline").style.opacity = 0;
+  setTimeout(() => { $("headline").innerHTML = HEAD[h]; $("headline").style.opacity = 1; }, 450);
+}, 6000);
+
+const ago = ts => { const m = Math.floor((Date.now() / 1000 - ts) / 60); return m < 1 ? "just now" : m < 60 ? m + " min ago" : Math.floor(m / 60) + " h ago"; };
+async function refresh() {
+  try {
+    const d = await (await fetch("/api/live/" + slug)).json();
+    $("name").textContent = d.name; $("emoji").textContent = d.emoji || "⭐";
+    document.documentElement.style.setProperty("--accent", d.color);
+    document.title = d.name + " · Tell us honestly";
+    if (d.today_feedback !== last) {
+      $("count").textContent = d.today_feedback;
+      if (last !== -1) { $("count").classList.add("bump"); setTimeout(() => $("count").classList.remove("bump"), 350); }
+      last = d.today_feedback;
+      $("feed").innerHTML = d.recent.slice(0, 4).map(r => { const m = MOOD[r.mood] || MOOD[""];
+        return `<div class="item"><span class="e">${m[0]}</span>A guest ${m[1]}<small>${ago(r.ts)}</small></div>`; }).join("");
+    }
+  } catch (e) {}
+}
+refresh(); setInterval(refresh, 8000);
+$("full").onclick = () => { document.documentElement.requestFullscreen?.(); $("full").style.display = "none"; };
+// keep a tablet screen awake where supported
+try { navigator.wakeLock?.request("screen"); } catch (e) {}
+</script>
+</body>
+</html>

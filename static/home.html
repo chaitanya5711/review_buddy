@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReviewBuddy · More honest Google reviews for local businesses</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#1c1712; --muted:#857a6b; --line:#eee4d4; --card:#fffdf9; --accent:#e8590c; --wa:#1a9e55; --blue:#1c7ed6;
+    --shadow-sm:0 1px 2px rgba(60,40,10,.06), 0 4px 14px rgba(60,40,10,.06); }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Plus Jakarta Sans",system-ui,sans-serif; color:var(--ink);
+    background:radial-gradient(900px 500px at 90% -10%, rgba(232,89,12,.12), transparent 60%),
+               radial-gradient(700px 400px at -10% 40%, rgba(26,158,85,.08), transparent 60%), #fbf6ee; }
+  .wrap { max-width:1060px; margin:0 auto; padding:30px 20px 50px; }
+  nav { display:flex; justify-content:space-between; align-items:center; }
+  .logo { display:flex; align-items:center; gap:10px; font-weight:800; font-size:17px; }
+  .logo i { width:38px; height:38px; border-radius:12px; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-style:normal; }
+  nav a { color:var(--ink); font-weight:700; text-decoration:none; font-size:14px; border:1px solid var(--line); background:var(--card); padding:10px 14px; border-radius:12px; }
+  .hero { display:grid; grid-template-columns:1.25fr 1fr; gap:40px; align-items:center; margin:54px 0 40px; }
+  .kicker { display:inline-block; font-size:12px; font-weight:800; letter-spacing:.12em; color:var(--accent); background:rgba(232,89,12,.1); padding:7px 12px; border-radius:999px; }
+  h1 { font-size:52px; line-height:1.04; letter-spacing:-.035em; margin:18px 0 16px; }
+  h1 em { font-family:"Instrument Serif",serif; font-weight:400; color:var(--accent); letter-spacing:-.01em; }
+  .lead { color:var(--muted); font-size:18px; line-height:1.6; margin:0 0 26px; }
+  .cta { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .cta a { padding:15px 20px; border-radius:14px; font-weight:800; text-decoration:none; }
+  .cta .p { background:var(--accent); color:#fff; box-shadow:0 12px 26px rgba(232,89,12,.3); }
+  .cta .s { background:var(--card); color:var(--ink); border:1px solid var(--line); }
+  select { font-family:inherit; font-size:15px; font-weight:700; padding:14px; border-radius:14px; border:1px solid var(--line); background:var(--card); }
+  .phone { justify-self:center; width:290px; height:560px; border-radius:44px; background:#1c1712; padding:12px; box-shadow:0 40px 80px rgba(28,23,18,.3); transform:rotate(3deg); }
+  .phone iframe { width:100%; height:100%; border:none; border-radius:34px; background:#fbf6ee; }
+  .flow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0 40px; font-size:14px; font-weight:600; }
+  .flow span { background:var(--card); border:1px solid var(--line); padding:10px 14px; border-radius:999px; box-shadow:var(--shadow-sm); }
+  .flow i { color:var(--muted); font-style:normal; }
+  h2 { font-size:26px; letter-spacing:-.02em; margin:0 0 16px; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:22px; padding:22px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; }
+  .who { font-size:11px; font-weight:800; letter-spacing:.1em; padding:6px 10px; border-radius:999px; align-self:flex-start; }
+  .card h3 { margin:14px 0 6px; font-size:19px; } .card p { color:var(--muted); font-size:15px; line-height:1.55; margin:0 0 18px; flex:1; }
+  .card a { display:block; text-align:center; padding:13px; border-radius:12px; font-weight:800; text-decoration:none; color:#fff; margin-top:8px; }
+  .features { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:40px 0; }
+  .f { padding:18px; border-radius:18px; background:rgba(255,253,249,.7); border:1px solid var(--line); }
+  .f b { display:block; margin:8px 0 4px; } .f span { color:var(--muted); font-size:14px; line-height:1.5; } .f .ic { font-size:24px; }
+  .rules { background:var(--ink); color:#efe8dc; border-radius:22px; padding:22px 24px; font-size:15px; line-height:1.8; }
+  .rules b { color:#fff; }
+  footer { text-align:center; color:var(--muted); font-size:13px; margin-top:30px; }
+  @media (max-width:880px) { .hero { grid-template-columns:1fr; } .phone { display:none; } h1 { font-size:40px; } .grid, .features { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><div class="logo"><i>★</i> ReviewBuddy</div><a href="/dashboard">Owner dashboard →</a></nav>
+
+  <section class="hero">
+    <div>
+      <span class="kicker">FOR LOCAL SHOPS, CAFÉS, CLINICS &amp; SALONS</span>
+      <h1>Happy customers don't refuse to review. <em>They just forget.</em></h1>
+      <p class="lead">ReviewBuddy asks every customer at the right moment and turns their own words, tapped, filled or spoken in English, Hindi or Marathi, into a Google review in under a minute.</p>
+      <div class="cta">
+        <select id="shop" aria-label="Business"></select>
+        <a class="p" id="tryLink" target="_blank">Try the customer flow →</a>
+      </div>
+    </div>
+    <div class="phone"><iframe id="preview" title="Customer page preview"></iframe></div>
+  </section>
+
+  <div class="flow">
+    <span>🧾 Customer visits</span><i>→</i><span>📱 Scans QR or gets WhatsApp</span><i>→</i>
+    <span>👆 Taps · ✍️ fills · 🎤 speaks</span><i>→</i><span>✨ Draft from their own words</span><i>→</i><span>⭐ Posts on Google</span>
+  </div>
+
+  <h2>Three simple screens</h2>
+  <div class="grid">
+    <div class="card">
+      <span class="who" style="background:rgba(232,89,12,.1);color:var(--accent)">FOR CUSTOMERS</span>
+      <h3>Review page</h3>
+      <p>Opens from the table QR code. Four quick steps, then it copies the review and opens Google's review box.</p>
+      <a id="lCustomer" target="_blank" style="background:var(--accent)">Open review page</a>
+      <a id="lPoster" target="_blank" style="background:var(--ink)">Print table QR poster</a>
+      <a id="lLive" target="_blank" style="background:#3b2f24">Counter display (tablet / phone)</a>
+    </div>
+    <div class="card">
+      <span class="who" style="background:rgba(26,158,85,.1);color:var(--wa)">FOR SHOP STAFF</span>
+      <h3>WhatsApp requests</h3>
+      <p>For customers who leave without scanning. Type a number and the link goes out. One gentle reminder the next day.</p>
+      <a id="lStaff" target="_blank" style="background:var(--wa)">Open staff page</a>
+    </div>
+    <div class="card">
+      <span class="who" style="background:rgba(28,126,214,.1);color:var(--blue)">FOR THE OWNER</span>
+      <h3>Results &amp; AI insights</h3>
+      <p>People asked → drafted → new Google reviews, plus an AI summary of what customers love and what to fix.</p>
+      <a href="/dashboard" style="background:var(--blue)">Open dashboard</a>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="f"><div class="ic">🎤</div><b>Voice in 3 languages</b><span>Speak in English, Hindi, Marathi or Hinglish. No typing needed.</span></div>
+    <div class="f"><div class="ic">✨</div><b>AI that never fakes</b><span>Gemini drafts only from what the customer said. Negative points stay in.</span></div>
+    <div class="f"><div class="ic">🔁</div><b>Smart follow-up</b><span>One polite WhatsApp reminder after a day, never spam.</span></div>
+    <div class="f"><div class="ic">📈</div><b>Live Google count</b><span>Optional auto-tracking of review count and rating via Places API.</span></div>
+    <div class="f"><div class="ic">🧠</div><b>Owner insights</b><span>What customers love, what's going wrong, and 3 actions for this week.</span></div>
+    <div class="f"><div class="ic">📺</div><b>Counter display</b><span>Turn a spare phone or tablet into a live QR stand with a real-time "guests shared today" counter.</span></div>
+    <div class="f"><div class="ic">🏪</div><b>Multi-business</b><span>Add a new shop from the dashboard in 30 seconds, with its own colour and QR.</span></div>
+  </div>
+
+  <div class="rules">
+    <b>Built on Google's review rules.</b> Every customer is asked and sent to Google, happy or unhappy (no review gating) · no rewards for reviews · customers post from their own account · AI only tidies the customer's own words and never adds praise.
+  </div>
+  <footer>ReviewBuddy · built by Chaitanya Jadhav for the goSTOPS Build Sprint</footer>
+</div>
+<script>
+const sel = document.getElementById("shop");
+function setLinks() {
+  const s = sel.value;
+  document.getElementById("lCustomer").href = document.getElementById("tryLink").href = "/r/" + s;
+  document.getElementById("lPoster").href = "/poster/" + s;
+  document.getElementById("lStaff").href = "/staff/" + s;
+  document.getElementById("lLive").href = "/live/" + s;
+  document.getElementById("preview").src = "/r/" + s + "?preview=1";
+}
+fetch("/api/shops").then(r => r.json()).then(list => {
+  sel.innerHTML = list.map(s => `<option value="${s.slug}">${(s.emoji || "🏪")} ${s.name.replace(/</g, "&lt;")}</option>`).join("");
+  setLinks();
+});
+sel.onchange = setLinks;
+</script>
+</body>
+</html>

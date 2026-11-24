@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbf6ee">
+<title>Share your experience</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent:#e8590c; --accent-soft:rgba(232,89,12,.10); --accent-line:rgba(232,89,12,.35);
+    --ink:#1c1712; --muted:#857a6b; --line:#eee4d4; --card:#fffdf9;
+    --shadow-sm:0 1px 2px rgba(60,40,10,.06), 0 4px 14px rgba(60,40,10,.06);
+    --shadow-lg:0 2px 4px rgba(60,40,10,.05), 0 18px 40px rgba(60,40,10,.10);
+    --r:22px;
+  }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; color:var(--ink); font-family:"Plus Jakarta Sans","Noto Sans Devanagari",system-ui,sans-serif; }
+  body { min-height:100vh;
+    background:
+      radial-gradient(900px 420px at 110% -10%, var(--accent-soft), transparent 60%),
+      radial-gradient(700px 380px at -20% 110%, rgba(47,158,68,.07), transparent 60%),
+      #fbf6ee; }
+  button, select, textarea { font-family:inherit; color:inherit; }
+  .app { max-width:460px; margin:0 auto; min-height:100vh; padding:max(14px, env(safe-area-inset-top)) 20px 26px; display:flex; flex-direction:column; }
+
+  /* header */
+  .top { display:flex; align-items:center; gap:10px; }
+  .iconbtn { width:40px; height:40px; border-radius:14px; border:1px solid var(--line); background:var(--card); font-size:18px; cursor:pointer; box-shadow:var(--shadow-sm); visibility:hidden; }
+  .brand { flex:1; display:flex; align-items:center; gap:10px; min-width:0; }
+  .badge { width:40px; height:40px; border-radius:14px; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 16px var(--accent-line); flex:none; }
+  .shop { font-weight:800; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .shop small { display:block; font-weight:500; font-size:12px; color:var(--muted); }
+  .lang { appearance:none; border:1px solid var(--line); background:var(--card); border-radius:14px; padding:10px 12px; font-size:13px; font-weight:700; box-shadow:var(--shadow-sm); cursor:pointer; }
+  .progress { display:flex; gap:6px; margin:18px 0 26px; }
+  .progress i { flex:1; height:5px; border-radius:5px; background:var(--line); transition:background .3s; }
+  .progress i.on { background:var(--accent); }
+
+  /* screens */
+  .screen { display:none; flex:1; flex-direction:column; }
+  .screen.on { display:flex; animation:rise .45s cubic-bezier(.2,.8,.2,1); }
+  @keyframes rise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+  .eyebrow { font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+  h1 { font-size:30px; line-height:1.15; letter-spacing:-.02em; margin:0 0 8px; }
+  .sub { color:var(--muted); margin:0 0 24px; font-size:15px; line-height:1.5; }
+
+  /* moods */
+  .moods { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .mood { position:relative; border:1.5px solid var(--line); border-radius:var(--r); padding:22px 10px 18px; text-align:center; cursor:pointer;
+    background:var(--card); box-shadow:var(--shadow-sm); transition:transform .15s, box-shadow .2s, border-color .2s; }
+  .mood:active { transform:scale(.96); }
+  .mood .e { font-size:50px; line-height:1; display:block; transition:transform .25s; }
+  .mood:hover .e { transform:scale(1.08) rotate(-4deg); }
+  .mood .t { display:block; margin-top:12px; font-weight:700; font-size:15px; }
+  .mood.on { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft), var(--shadow-lg); }
+  .m0 { background:linear-gradient(160deg,#fff7ec,#fffdf9); } .m1 { background:linear-gradient(160deg,#f3faf2,#fffdf9); }
+  .m2 { background:linear-gradient(160deg,#f6f4ef,#fffdf9); } .m3 { background:linear-gradient(160deg,#f5f3fa,#fffdf9); }
+  .proof { margin:14px auto 0; text-align:center; font-size:13px; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:8px 14px; width:max-content; max-width:100%; }
+  .trust { display:flex; gap:14px; justify-content:center; margin-top:18px; font-size:12px; color:var(--muted); flex-wrap:wrap; }
+
+  /* blocks */
+  .block { background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:18px; margin-bottom:12px; box-shadow:var(--shadow-sm); }
+  .block h3 { margin:0 0 12px; font-size:14px; font-weight:700; color:var(--muted); }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip { border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:10px 15px; font-size:14px; font-weight:600; cursor:pointer; transition:all .15s; }
+  .chip.on { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); }
+  .chip.on::before { content:"✓ "; }
+  .aspect { display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
+  .aspect + .aspect { border-top:1px dashed var(--line); }
+  .aspect .name { font-weight:700; font-size:15px; }
+  .faces { display:flex; gap:6px; }
+  .face { width:46px; height:46px; border-radius:15px; border:1.5px solid var(--line); background:#fff; font-size:22px; cursor:pointer; filter:grayscale(1); opacity:.55; transition:all .18s; }
+  .face.on { border-color:var(--accent); background:var(--accent-soft); filter:none; opacity:1; transform:translateY(-2px); }
+
+  /* voice */
+  .micwrap { display:flex; flex-direction:column; align-items:center; margin:2px 0 18px; }
+  .mic { position:relative; width:128px; height:128px; border-radius:50%; border:none; cursor:pointer; color:#fff; font-size:48px;
+    background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 45%), var(--accent);
+    box-shadow:0 16px 36px var(--accent-line), inset 0 -6px 14px rgba(0,0,0,.12); transition:transform .15s; }
+  .mic:active { transform:scale(.95); }
+  .mic.rec { background:#d6336c; animation:ring 1.3s infinite; }
+  @keyframes ring { 0% { box-shadow:0 0 0 0 rgba(214,51,108,.45); } 100% { box-shadow:0 0 0 30px rgba(214,51,108,0); } }
+  .wave { display:flex; gap:4px; height:22px; align-items:center; margin-top:14px; visibility:hidden; }
+  .wave i { width:4px; border-radius:3px; background:#d6336c; animation:wave .9s infinite ease-in-out; }
+  .wave i:nth-child(2){animation-delay:.1s} .wave i:nth-child(3){animation-delay:.2s} .wave i:nth-child(4){animation-delay:.3s} .wave i:nth-child(5){animation-delay:.4s}
+  @keyframes wave { 0%,100% { height:6px; } 50% { height:22px; } }
+  .miclabel { margin-top:6px; font-weight:700; color:var(--accent); font-size:15px; }
+  textarea { width:100%; border:1.5px solid var(--line); border-radius:18px; padding:15px; font-size:16px; line-height:1.5; resize:vertical; min-height:96px; background:var(--card); box-shadow:var(--shadow-sm); }
+  textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+  details { margin-top:12px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px 16px; }
+  summary { cursor:pointer; color:var(--accent); font-weight:700; font-size:14px; list-style:none; }
+  summary::-webkit-details-marker { display:none; }
+  .sentence { font-size:16px; line-height:2.5; margin-top:8px; }
+  .sentence select { font-size:15px; padding:5px 8px; border:none; border-bottom:2px solid var(--accent); background:var(--accent-soft); border-radius:8px 8px 2px 2px; max-width:100%; font-weight:600; }
+  .linkbtn { background:none; border:none; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; padding:6px 0 0; }
+
+  /* buttons */
+  .spacer { flex:1; min-height:18px; }
+  .btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:18px; border:none; border-radius:18px; font-size:17px; font-weight:800; cursor:pointer; transition:transform .12s, opacity .2s; }
+  .btn:active { transform:scale(.98); }
+  .btn:disabled { opacity:.65; }
+  .primary { background:var(--ink); color:#fff; box-shadow:0 10px 24px rgba(28,23,18,.22); }
+  .accent { background:var(--accent); color:#fff; box-shadow:0 12px 28px var(--accent-line); }
+  .ghost { background:none; color:var(--muted); font-weight:700; font-size:15px; padding:14px; }
+  .err { color:#c92a2a; font-size:14px; text-align:center; min-height:20px; margin:6px 0; }
+  .spin { width:18px; height:18px; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:sp .7s linear infinite; }
+  @keyframes sp { to { transform:rotate(360deg); } }
+
+  /* review */
+  .paper { position:relative; background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:18px 18px 12px; box-shadow:var(--shadow-lg); }
+  .paper .stars { color:#f59f00; font-size:18px; letter-spacing:2px; }
+  .paper textarea { border:none; box-shadow:none; padding:8px 0 0; font-size:17px; min-height:150px; background:transparent; }
+  .paper textarea:focus { box-shadow:none; }
+  .aib { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--muted); background:#f6f1e8; border-radius:999px; padding:6px 10px; }
+  .tools { display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:10px; }
+  .seg { display:inline-flex; background:#f1ebe0; border-radius:12px; padding:3px; }
+  .seg button { border:none; background:none; padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; color:var(--muted); }
+  .seg button.on { background:#fff; color:var(--ink); box-shadow:var(--shadow-sm); }
+  .again { border:1.5px solid var(--line); background:#fff; border-radius:12px; padding:9px 12px; font-size:13px; font-weight:700; cursor:pointer; }
+
+  /* done */
+  .center { text-align:center; }
+  .bigemoji { font-size:64px; text-align:center; margin:4px 0 8px; animation:pop .6s cubic-bezier(.2,1.6,.4,1); }
+  @keyframes pop { from { transform:scale(.3); opacity:0; } to { transform:none; opacity:1; } }
+  .steps { display:flex; flex-direction:column; gap:10px; margin:6px 0 18px; counter-reset:s; }
+  .stepi { display:flex; align-items:center; gap:14px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:var(--shadow-sm); }
+  .stepi .n { width:44px; height:44px; border-radius:14px; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; font-size:22px; flex:none; }
+  .stepi b { font-size:16px; }
+  .note { text-align:center; font-size:12px; color:var(--muted); margin-top:18px; line-height:1.5; }
+  .powered { text-align:center; font-size:11px; color:#b5aa9a; margin-top:6px; letter-spacing:.04em; }
+  .hidden { display:none !important; }
+  canvas#confetti { position:fixed; inset:0; pointer-events:none; z-index:10; }
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="app">
+  <div class="top">
+    <button class="iconbtn" id="backBtn" aria-label="Back">←</button>
+    <div class="brand"><div class="badge" id="badge">☕</div><div class="shop" id="shopName">…<small id="shopSub"></small></div></div>
+    <select class="lang" id="lang" aria-label="Language">
+      <option value="en">EN</option><option value="hi">हिंदी</option><option value="mr">मराठी</option>
+    </select>
+  </div>
+  <div class="progress" id="progress"><i></i><i></i><i></i><i></i></div>
+
+  <!-- 1 -->
+  <section class="screen on" id="s1">
+    <div class="eyebrow" data-t="eb1"></div>
+    <h1 data-t="title"></h1>
+    <p class="sub" data-t="sub"></p>
+    <div class="moods" id="moods"></div>
+    <div class="trust"><span data-t="tr1"></span><span data-t="tr2"></span><span data-t="tr3"></span></div>
+    <div class="proof hidden" id="proof"></div>
+    <div class="spacer"></div>
+    <button class="btn ghost" id="own1" data-t="own"></button>
+  </section>
+
+  <!-- 2 -->
+  <section class="screen" id="s2">
+    <div class="eyebrow" data-t="eb2"></div>
+    <h1 data-t="moreTitle"></h1>
+    <p class="sub" data-t="moreSub"></p>
+    <div class="block" id="itemsBlock"><h3 data-t="had"></h3><div class="chips" id="items"></div></div>
+    <div class="block" id="aspects"></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="next2" data-t="next"></button>
+  </section>
+
+  <!-- 3 -->
+  <section class="screen" id="s3">
+    <div class="eyebrow" data-t="eb3"></div>
+    <h1 data-t="sayTitle"></h1>
+    <p class="sub" data-t="saySub"></p>
+    <div class="micwrap" id="micwrap">
+      <button class="mic" id="mic" aria-label="Speak">🎤</button>
+      <div class="wave" id="wave"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="miclabel" id="micLabel"></div>
+    </div>
+    <textarea id="spoken"></textarea>
+    <details id="fillBox">
+      <summary data-t="fill"></summary>
+      <div class="sentence" id="sentence"></div>
+      <button class="linkbtn" id="shuffle" data-t="shuffle"></button>
+    </details>
+    <div class="spacer"></div>
+    <div class="err" id="err"></div>
+    <button class="btn primary" id="make"></button>
+  </section>
+
+  <!-- 4 -->
+  <section class="screen" id="s4">
+    <div class="eyebrow" data-t="eb4"></div>
+    <h1 data-t="readyTitle"></h1>
+    <p class="sub" data-t="readySub"></p>
+    <div class="paper">
+      <span class="aib">✨ <span data-t="badge"></span></span>
+      <textarea id="review" aria-label="Your review"></textarea>
+    </div>
+    <div class="tools">
+      <div class="seg" id="style"><button data-s="short" class="on" data-t="short"></button><button data-s="detailed" data-t="detailed"></button></div>
+      <button class="again" id="again" data-t="another"></button>
+    </div>
+    <div class="spacer"></div>
+    <div class="err" id="err4"></div>
+    <button class="btn accent" id="post"></button>
+    <button class="btn ghost" id="redo" data-t="change"></button>
+  </section>
+
+  <!-- 5 -->
+  <section class="screen" id="s5">
+    <div class="bigemoji">🎉</div>
+    <h1 class="center" data-t="doneTitle"></h1>
+    <p class="sub center" data-t="doneSub"></p>
+    <div class="steps">
+      <div class="stepi"><div class="n">⭐</div><b data-t="d1"></b></div>
+      <div class="stepi"><div class="n">📋</div><b data-t="d2"></b></div>
+      <div class="stepi"><div class="n">✅</div><b data-t="d3"></b></div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn accent" id="reopen" data-t="reopen"></button>
+    <p class="center" style="margin-top:16px;font-size:17px;font-weight:700" data-t="thanks"></p>
+  </section>
+
+  <div class="note" data-t="note"></div>
+  <div class="powered">POWERED BY REVIEWBUDDY</div>
+</div>
+
+<script>
+const T = {
+  en: { eb1:"Step 1 of 4", eb2:"Step 2 of 4", eb3:"Step 3 of 4", eb4:"Step 4 of 4",
+    title:"How was your visit today?", sub:"Your honest words help this business, and help others decide. It takes under a minute.",
+    moods:["Excellent","Good","Okay","Not good"], tr1:"📱 No app needed", tr2:"⏱ 1 minute", tr3:"🗣 Speak or type", proof:"🔥 {n} guests shared feedback today",
+    moreTitle:"Tell us a little more", moreSub:"Tap what fits. Skip anything you like.",
+    had:"WHAT DID YOU HAVE?", next:"Next →",
+    sayTitle:"Say it in your own words", saySub:"Speak or type. Even one line is perfect. Hinglish works too!",
+    mic:"Tap & speak", listening:"Listening… tap to stop", typeph:"…or type here",
+    fill:"✍️ Not sure what to say? Fill a sentence", shuffle:"↻ Show another sentence",
+    create:"Create my review ✨", writing:"Writing your review…",
+    readyTitle:"Your review is ready", readySub:"Built only from what you told us. Edit anything that doesn't sound like you.",
+    badge:"Drafted from your own words", short:"Short", detailed:"Detailed", another:"↻ Another version",
+    post:"Copy & post on Google", change:"← Change my answers",
+    doneTitle:"Almost done!", doneSub:"Your review is copied. On the Google page:",
+    d1:"Tap the stars", d2:"Long-press the box → Paste", d3:"Tap Post",
+    reopen:"Open Google again", thanks:"Thank you for your time 🙏",
+    own:"I'll write my own on Google →", empty:"Tap something or say a few words first.",
+    nomic:"Couldn't hear you. Try again or use the 🎤 on your keyboard.", fail:"Something went wrong. Please try again.",
+    busy:"Too many tries. Please wait a minute.",
+    note:"Honest reviews, good or bad, are welcome. No rewards are offered for reviews.",
+    asp:{Food:"Food",Service:"Service",Ambience:"Ambience",Quality:"Quality",Staff:"Staff",Place:"Place"} },
+  hi: { eb1:"चरण 1 / 4", eb2:"चरण 2 / 4", eb3:"चरण 3 / 4", eb4:"चरण 4 / 4",
+    title:"आज आपका अनुभव कैसा रहा?", sub:"आपके सच्चे शब्द इस दुकान की और दूसरों की मदद करते हैं। एक मिनट से भी कम लगेगा।",
+    moods:["बहुत बढ़िया","अच्छा","ठीक-ठाक","अच्छा नहीं"], tr1:"📱 कोई ऐप नहीं", tr2:"⏱ 1 मिनट", tr3:"🗣 बोलें या लिखें", proof:"🔥 आज {n} लोगों ने अपनी राय दी",
+    moreTitle:"थोड़ा और बताइए", moreSub:"जो सही लगे उस पर टैप करें। कुछ भी छोड़ सकते हैं।",
+    had:"आपने क्या लिया?", next:"आगे →",
+    sayTitle:"अपने शब्दों में बताइए", saySub:"बोलिए या लिखिए। एक लाइन भी काफ़ी है।",
+    mic:"टैप करें और बोलें", listening:"सुन रहे हैं… रोकने के लिए टैप करें", typeph:"…या यहाँ लिखें",
+    fill:"✍️ क्या लिखें पता नहीं? वाक्य भरें", shuffle:"↻ दूसरा वाक्य",
+    create:"मेरा रिव्यू बनाएं ✨", writing:"रिव्यू लिख रहे हैं…",
+    readyTitle:"आपका रिव्यू तैयार है", readySub:"सिर्फ़ आपकी बातों से बना है। जो आपके जैसा न लगे, बदल दें।",
+    badge:"आपके ही शब्दों से बनाया गया", short:"छोटा", detailed:"विस्तार से", another:"↻ दूसरा वर्ज़न",
+    post:"कॉपी करें और Google पर पोस्ट करें", change:"← जवाब बदलें",
+    doneTitle:"बस हो गया!", doneSub:"रिव्यू कॉपी हो गया है। Google पेज पर:",
+    d1:"स्टार चुनें", d2:"बॉक्स को दबाकर रखें → Paste", d3:"Post दबाएं",
+    reopen:"Google फिर से खोलें", thanks:"आपके समय के लिए धन्यवाद 🙏",
+    own:"मैं खुद Google पर लिखूंगा →", empty:"पहले कुछ चुनें या बोलें।",
+    nomic:"आवाज़ नहीं सुनाई दी। फिर से कोशिश करें या कीबोर्ड का 🎤 इस्तेमाल करें।", fail:"कुछ गड़बड़ हुई। फिर से कोशिश करें।",
+    busy:"बहुत ज़्यादा कोशिशें। एक मिनट रुकें।",
+    note:"अच्छा हो या बुरा, सच्चा रिव्यू दें। रिव्यू के लिए कोई इनाम नहीं दिया जाता।",
+    asp:{Food:"खाना",Service:"सेवा",Ambience:"माहौल",Quality:"गुणवत्ता",Staff:"स्टाफ",Place:"जगह"} },
+  mr: { eb1:"पायरी 1 / 4", eb2:"पायरी 2 / 4", eb3:"पायरी 3 / 4", eb4:"पायरी 4 / 4",
+    title:"आज तुमचा अनुभव कसा होता?", sub:"तुमचे खरे शब्द या दुकानाला आणि इतरांना मदत करतात. एका मिनिटापेक्षा कमी वेळ लागेल.",
+    moods:["खूप छान","चांगला","ठीक","चांगला नाही"], tr1:"📱 ॲप लागत नाही", tr2:"⏱ 1 मिनिट", tr3:"🗣 बोला किंवा लिहा", proof:"🔥 आज {n} जणांनी अभिप्राय दिला",
+    moreTitle:"थोडं अजून सांगा", moreSub:"योग्य वाटेल त्यावर टॅप करा. काहीही वगळू शकता.",
+    had:"तुम्ही काय घेतलं?", next:"पुढे →",
+    sayTitle:"तुमच्या शब्दांत सांगा", saySub:"बोला किंवा लिहा. एक ओळही पुरेशी आहे.",
+    mic:"टॅप करा आणि बोला", listening:"ऐकत आहोत… थांबवण्यासाठी टॅप करा", typeph:"…किंवा इथे लिहा",
+    fill:"✍️ काय लिहायचं सुचत नाही? वाक्य भरा", shuffle:"↻ दुसरं वाक्य",
+    create:"माझा रिव्ह्यू तयार करा ✨", writing:"रिव्ह्यू लिहित आहोत…",
+    readyTitle:"तुमचा रिव्ह्यू तयार आहे", readySub:"फक्त तुम्ही सांगितलेल्यावरून तयार केला आहे. तुमच्यासारखं न वाटल्यास बदला.",
+    badge:"तुमच्याच शब्दांतून तयार केलेलं", short:"छोटा", detailed:"सविस्तर", another:"↻ दुसरी आवृत्ती",
+    post:"कॉपी करा आणि Google वर पोस्ट करा", change:"← उत्तरं बदला",
+    doneTitle:"जवळजवळ झालं!", doneSub:"रिव्ह्यू कॉपी झाला आहे. Google पेजवर:",
+    d1:"स्टार निवडा", d2:"बॉक्स दाबून ठेवा → Paste", d3:"Post दाबा",
+    reopen:"Google पुन्हा उघडा", thanks:"वेळ दिल्याबद्दल धन्यवाद 🙏",
+    own:"मी स्वतः Google वर लिहीन →", empty:"आधी काहीतरी निवडा किंवा बोला.",
+    nomic:"आवाज ऐकू आला नाही. पुन्हा प्रयत्न करा किंवा कीबोर्डचा 🎤 वापरा.", fail:"काहीतरी चुकलं. पुन्हा प्रयत्न करा.",
+    busy:"खूप प्रयत्न झाले. एक मिनिट थांबा.",
+    note:"चांगला असो वा वाईट, खरा रिव्ह्यू द्या. रिव्ह्यूसाठी कोणतंही बक्षीस दिलं जात नाही.",
+    asp:{Food:"जेवण",Service:"सेवा",Ambience:"वातावरण",Quality:"गुणवत्ता",Staff:"कर्मचारी",Place:"जागा"} },
+};
+const EMOJI = ["😍","🙂","😐","😞"];
+const RATING_VALUES = ["Excellent","Good","Okay","Not good"]; // sent to server, same flow for every answer
+const SPEECH_LANG = { en:"en-IN", hi:"hi-IN", mr:"mr-IN" };
+
+const slug = location.pathname.split("/").filter(Boolean).pop();
+const $ = id => document.getElementById(id);
+let shop, lang = "en", step = 1, ratings = {}, items = new Set(), tplIndex = 0, style = "short", variant = 0, rec = null;
+const t = k => T[lang][k];
+const buzz = () => { try { navigator.vibrate && navigator.vibrate(8); } catch (e) {} };
+
+async function api(path, body) {
+  const r = await fetch(path, body ? { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body) } : {});
+  if (r.status === 429) throw new Error("busy");
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+const PREVIEW = new URLSearchParams(location.search).has("preview"); // home-page preview: never counted
+const logEvent = type => PREVIEW ? null : api("/api/event", { slug, type }).catch(() => {});
+
+// ---------- navigation ----------
+function go(n) {
+  step = n;
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+  $("s" + n).classList.add("on");
+  [...$("progress").children].forEach((b, i) => b.classList.toggle("on", i < Math.min(n, 4)));
+  $("backBtn").style.visibility = n > 1 && n < 5 ? "visible" : "hidden";
+  scrollTo({ top:0, behavior:"smooth" });
+}
+$("backBtn").onclick = () => go(step - 1);
+
+// ---------- language ----------
+function setBtn(id, label, busy) { $(id).innerHTML = busy ? `<span class="spin"></span>${label}` : label; }
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
+  $("spoken").placeholder = t("typeph");
+  $("micLabel").textContent = rec ? t("listening") : t("mic");
+  setBtn("make", t("create")); setBtn("post", "📋 " + t("post"));
+  if (shop && shop.today >= 3) { $("proof").textContent = t("proof").replace("{n}", shop.today); $("proof").classList.remove("hidden"); }
+  renderMoods(); renderAspects();
+}
+$("lang").onchange = e => { lang = e.target.value; applyLang(); };
+
+// ---------- step 1 ----------
+function renderMoods() {
+  $("moods").innerHTML = "";
+  RATING_VALUES.forEach((v, i) => {
+    const b = document.createElement("button");
+    b.className = `mood m${i}` + (ratings.overall === v ? " on" : "");
+    b.innerHTML = `<span class="e">${EMOJI[i]}</span><span class="t">${t("moods")[i]}</span>`;
+    b.onclick = () => { buzz(); ratings.overall = v; renderMoods(); setTimeout(() => go(2), 220); };
+    $("moods").appendChild(b);
+  });
+}
+
+// ---------- step 2 ----------
+function renderItems() {
+  $("items").innerHTML = "";
+  if (!shop.menu.length) { $("itemsBlock").classList.add("hidden"); return; }
+  shop.menu.forEach(m => {
+    const c = document.createElement("button");
+    c.className = "chip" + (items.has(m) ? " on" : ""); c.textContent = m;
+    c.onclick = () => { buzz(); items.has(m) ? items.delete(m) : items.add(m); c.classList.toggle("on"); };
+    $("items").appendChild(c);
+  });
+}
+function renderAspects() {
+  $("aspects").innerHTML = "";
+  for (const key of ["food", "service", "ambience"]) {
+    const en = shop.labels[key];
+    const row = document.createElement("div"); row.className = "aspect";
+    row.innerHTML = `<div class="name">${t("asp")[en] || en}</div><div class="faces"></div>`;
+    RATING_VALUES.forEach((v, i) => {
+      const f = document.createElement("button");
+      f.className = "face" + (ratings[key] === v ? " on" : ""); f.textContent = EMOJI[i];
+      f.setAttribute("aria-label", `${en}: ${t("moods")[i]}`);
+      f.onclick = () => { buzz(); ratings[key] === v ? delete ratings[key] : ratings[key] = v; renderAspects(); };
+      row.querySelector(".faces").appendChild(f);
+    });
+    $("aspects").appendChild(row);
+  }
+}
+$("next2").onclick = () => go(3);
+
+// ---------- step 3 ----------
+function renderTemplate() {
+  const tpl = shop.templates[tplIndex], box = $("sentence");
+  box.innerHTML = "";
+  for (const p of tpl.text.split(/(\{\w+\})/)) {
+    const m = p.match(/^\{(\w+)\}$/);
+    if (!m) { box.appendChild(document.createTextNode(p)); continue; }
+    const opts = m[1] === "dish" ? shop.menu : (tpl.blanks[m[1]] || []);
+    const sel = document.createElement("select");
+    sel.innerHTML = `<option value="">______</option>` + opts.map(o => `<option>${o}</option>`).join("") + `<option value="__other">Other…</option>`;
+    sel.onchange = () => {
+      if (sel.value !== "__other") return;
+      const v = (prompt("Type your word") || "").trim();
+      if (v) { const o = document.createElement("option"); o.textContent = v; sel.insertBefore(o, sel.lastElementChild); sel.value = v; }
+      else sel.value = "";
+    };
+    box.appendChild(sel);
+  }
+}
+$("shuffle").onclick = () => { tplIndex = (tplIndex + 1) % shop.templates.length; renderTemplate(); };
+function filledSentence() {
+  const sels = $("sentence").querySelectorAll("select");
+  if (!sels.length || ![...sels].every(s => s.value)) return "";
+  let out = ""; $("sentence").childNodes.forEach(n => out += n.nodeName === "SELECT" ? n.value : n.textContent);
+  return out.trim();
+}
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SR) $("micwrap").classList.add("hidden");
+$("mic").onclick = () => {
+  if (rec) { rec.stop(); return; }
+  buzz();
+  rec = new SR(); rec.lang = SPEECH_LANG[lang]; rec.interimResults = true; rec.continuous = false;
+  const before = $("spoken").value.trim();
+  rec.onresult = e => { $("spoken").value = (before ? before + " " : "") + [...e.results].map(r => r[0].transcript).join(" "); };
+  rec.onerror = () => { $("err").textContent = t("nomic"); };
+  rec.onend = () => { rec = null; $("mic").classList.remove("rec"); $("wave").style.visibility = "hidden"; $("micLabel").textContent = t("mic"); };
+  rec.start(); $("err").textContent = "";
+  $("mic").classList.add("rec"); $("wave").style.visibility = "visible"; $("micLabel").textContent = t("listening");
+};
+
+// ---------- create / regenerate ----------
+async function createReview(errId, btnId, btnLabel) {
+  $(errId).textContent = ""; $(btnId).disabled = true; setBtn(btnId, t("writing"), true);
+  try {
+    const res = await api("/api/review", { slug, lang, ratings, items:[...items], filled:filledSentence(),
+                                           spoken:$("spoken").value, style, variant });
+    if (!res.review) { $(errId).textContent = t("empty"); return false; }
+    $("review").value = res.review; return true;
+  } catch (e) { $(errId).textContent = e.message === "busy" ? t("busy") : t("fail"); return false; }
+  finally { $(btnId).disabled = false; setBtn(btnId, btnLabel); }
+}
+$("make").onclick = async () => { variant = 0; if (await createReview("err", "make", t("create"))) go(4); };
+$("again").onclick = async () => { variant++; await createReview("err4", "again", t("another")); };
+$("style").onclick = async e => {
+  const s = e.target.dataset.s; if (!s || s === style) return;
+  style = s; [...$("style").children].forEach(b => b.classList.toggle("on", b.dataset.s === s));
+  await createReview("err4", "again", t("another"));
+};
+
+// ---------- post ----------
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; }
+  catch (e) {
+    const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand("copy"); } catch (_) {} ta.remove(); return ok;
+  }
+}
+const openGoogle = () => { window.open(shop.review_url, "_blank") || (location.href = shop.review_url); };
+$("post").onclick = async () => { buzz(); await copyText($("review").value); logEvent("copy_post"); go(5); confetti(); openGoogle(); };
+$("redo").onclick = () => go(2);
+$("reopen").onclick = openGoogle;
+$("own1").onclick = () => { logEvent("copy_post"); openGoogle(); };
+
+// ---------- confetti (tiny, no library) ----------
+function confetti() {
+  const c = $("confetti"), x = c.getContext("2d"); c.width = innerWidth; c.height = innerHeight;
+  const colors = [getComputedStyle(document.documentElement).getPropertyValue("--accent"), "#f59f00", "#2f9e44", "#1c7ed6", "#d6336c"];
+  const P = Array.from({ length:120 }, () => ({ x:innerWidth / 2, y:innerHeight / 3, vx:(Math.random() - .5) * 12,
+    vy:Math.random() * -12 - 3, s:Math.random() * 6 + 4, r:Math.random() * 6, c:colors[Math.floor(Math.random() * colors.length)] }));
+  let f = 0;
+  (function draw() {
+    x.clearRect(0, 0, c.width, c.height);
+    P.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .35; p.r += .1;
+      x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); });
+    if (++f < 140) requestAnimationFrame(draw); else x.clearRect(0, 0, c.width, c.height);
+  })();
+}
+
+// ---------- start ----------
+function hexToRgba(hex, a) {
+  const m = hex.replace("#", "").match(/.{2}/g); if (!m || m.length < 3) return `rgba(232,89,12,${a})`;
+  return `rgba(${m.map(h => parseInt(h, 16)).join(",")},${a})`;
+}
+(async () => {
+  try { shop = await api("/api/shop/" + slug); }
+  catch (e) { document.querySelector(".app").innerHTML = "<p style='text-align:center;margin-top:80px'>Shop not found.</p>"; return; }
+  const root = document.documentElement.style;
+  root.setProperty("--accent", shop.color); root.setProperty("--accent-soft", hexToRgba(shop.color, .10));
+  root.setProperty("--accent-line", hexToRgba(shop.color, .35));
+  document.title = shop.name + " · Review";
+  $("shopName").firstChild.textContent = shop.name;
+  $("shopSub").textContent = "Google review";
+  $("badge").textContent = shop.emoji;
+  const pref = (navigator.language || "").slice(0, 2);
+  if (T[pref]) { lang = pref; $("lang").value = pref; }
+  renderItems(); renderTemplate(); applyLang(); go(1);
+  try { if (!sessionStorage.getItem("scan_" + slug)) { sessionStorage.setItem("scan_" + slug, 1); logEvent("scan"); } }
+  catch (e) { logEvent("scan"); }
+})();
+</script>
+</body>
+</html>
