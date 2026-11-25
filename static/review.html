@@ -67,6 +67,10 @@
   .chip { border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:10px 15px; font-size:14px; font-weight:600; cursor:pointer; transition:all .15s; }
   .chip.on { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); }
   .chip.on::before { content:"✓ "; }
+  .addrow { display:flex; gap:8px; margin-top:12px; }
+  .addrow input { flex:1; min-width:0; border:1.5px dashed var(--line); background:#fff; border-radius:999px; padding:10px 15px; font-size:14px; font-family:inherit; outline:none; }
+  .addrow input:focus { border-style:solid; border-color:var(--accent); }
+  .addrow button { border:none; background:var(--accent); color:#fff; border-radius:999px; padding:10px 18px; font-size:14px; font-weight:700; cursor:pointer; }
   .aspect { display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
   .aspect + .aspect { border-top:1px dashed var(--line); }
   .aspect .name { font-weight:700; font-size:15px; }
@@ -163,7 +167,8 @@
     <div class="eyebrow" data-t="eb2"></div>
     <h1 data-t="moreTitle"></h1>
     <p class="sub" data-t="moreSub"></p>
-    <div class="block" id="itemsBlock"><h3 data-t="had"></h3><div class="chips" id="items"></div></div>
+    <div class="block" id="itemsBlock"><h3 data-t="had"></h3><div class="chips" id="items"></div>
+      <div class="addrow"><input id="otherItem" maxlength="40" data-tp="otherph" autocomplete="off"><button type="button" id="addItem" data-t="add"></button></div></div>
     <div class="block" id="aspects"></div>
     <div class="spacer"></div>
     <button class="btn primary" id="next2" data-t="next"></button>
@@ -234,7 +239,7 @@ const T = {
     title:"How was your visit today?", sub:"Your honest words help this business, and help others decide. It takes under a minute.",
     moods:["Excellent","Good","Okay","Not good"], tr1:"📱 No app needed", tr2:"⏱ 1 minute", tr3:"🗣 Speak or type", proof:"🔥 {n} guests shared feedback today",
     moreTitle:"Tell us a little more", moreSub:"Tap what fits. Skip anything you like.",
-    had:"WHAT DID YOU HAVE?", next:"Next →",
+    had:"WHAT DID YOU HAVE?", otherph:"Had something else? Type it here", add:"+ Add", next:"Next →",
     sayTitle:"Say it in your own words", saySub:"Speak or type. Even one line is perfect. Hinglish works too!",
     mic:"Tap & speak", listening:"Listening… tap to stop", typeph:"…or type here",
     fill:"✍️ Not sure what to say? Fill a sentence", shuffle:"↻ Show another sentence",
@@ -254,7 +259,7 @@ const T = {
     title:"आज आपका अनुभव कैसा रहा?", sub:"आपके सच्चे शब्द इस दुकान की और दूसरों की मदद करते हैं। एक मिनट से भी कम लगेगा।",
     moods:["बहुत बढ़िया","अच्छा","ठीक-ठाक","अच्छा नहीं"], tr1:"📱 कोई ऐप नहीं", tr2:"⏱ 1 मिनट", tr3:"🗣 बोलें या लिखें", proof:"🔥 आज {n} लोगों ने अपनी राय दी",
     moreTitle:"थोड़ा और बताइए", moreSub:"जो सही लगे उस पर टैप करें। कुछ भी छोड़ सकते हैं।",
-    had:"आपने क्या लिया?", next:"आगे →",
+    had:"आपने क्या लिया?", otherph:"कुछ और लिया? यहाँ लिखें", add:"+ जोड़ें", next:"आगे →",
     sayTitle:"अपने शब्दों में बताइए", saySub:"बोलिए या लिखिए। एक लाइन भी काफ़ी है।",
     mic:"टैप करें और बोलें", listening:"सुन रहे हैं… रोकने के लिए टैप करें", typeph:"…या यहाँ लिखें",
     fill:"✍️ क्या लिखें पता नहीं? वाक्य भरें", shuffle:"↻ दूसरा वाक्य",
@@ -274,7 +279,7 @@ const T = {
     title:"आज तुमचा अनुभव कसा होता?", sub:"तुमचे खरे शब्द या दुकानाला आणि इतरांना मदत करतात. एका मिनिटापेक्षा कमी वेळ लागेल.",
     moods:["खूप छान","चांगला","ठीक","चांगला नाही"], tr1:"📱 ॲप लागत नाही", tr2:"⏱ 1 मिनिट", tr3:"🗣 बोला किंवा लिहा", proof:"🔥 आज {n} जणांनी अभिप्राय दिला",
     moreTitle:"थोडं अजून सांगा", moreSub:"योग्य वाटेल त्यावर टॅप करा. काहीही वगळू शकता.",
-    had:"तुम्ही काय घेतलं?", next:"पुढे →",
+    had:"तुम्ही काय घेतलं?", otherph:"आणखी काही घेतलं? इथे लिहा", add:"+ जोडा", next:"पुढे →",
     sayTitle:"तुमच्या शब्दांत सांगा", saySub:"बोला किंवा लिहा. एक ओळही पुरेशी आहे.",
     mic:"टॅप करा आणि बोला", listening:"ऐकत आहोत… थांबवण्यासाठी टॅप करा", typeph:"…किंवा इथे लिहा",
     fill:"✍️ काय लिहायचं सुचत नाही? वाक्य भरा", shuffle:"↻ दुसरं वाक्य",
@@ -327,6 +332,7 @@ function applyLang() {
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
   $("spoken").placeholder = t("typeph");
+  $("otherItem").placeholder = t("otherph");
   $("micLabel").textContent = rec ? t("listening") : t("mic");
   setBtn("make", t("create")); setBtn("post", "📋 " + t("post"));
   if (shop && shop.today >= 3) { $("proof").textContent = t("proof").replace("{n}", shop.today); $("proof").classList.remove("hidden"); }
@@ -347,16 +353,32 @@ function renderMoods() {
 }
 
 // ---------- step 2 ----------
+let customItems = [];
 function renderItems() {
   $("items").innerHTML = "";
-  if (!shop.menu.length) { $("itemsBlock").classList.add("hidden"); return; }
-  shop.menu.forEach(m => {
+  [...(shop.menu || []), ...customItems].forEach(m => {
     const c = document.createElement("button");
     c.className = "chip" + (items.has(m) ? " on" : ""); c.textContent = m;
-    c.onclick = () => { buzz(); items.has(m) ? items.delete(m) : items.add(m); c.classList.toggle("on"); };
+    c.onclick = () => {
+      buzz();
+      if (customItems.includes(m)) { customItems = customItems.filter(x => x !== m); items.delete(m); renderItems(); return; }
+      items.has(m) ? items.delete(m) : items.add(m); c.classList.toggle("on");
+    };
     $("items").appendChild(c);
   });
 }
+function addCustomItem() {
+  const inp = $("otherItem");
+  const v = inp.value.trim().replace(/\s+/g, " ").slice(0, 40);
+  if (!v) return;
+  const all = [...(shop.menu || []), ...customItems];
+  const hit = all.find(x => x.toLowerCase() === v.toLowerCase());
+  if (hit) items.add(hit);
+  else { customItems.push(v); items.add(v); }
+  inp.value = ""; buzz(); renderItems();
+}
+$("addItem").onclick = addCustomItem;
+$("otherItem").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addCustomItem(); } });
 function renderAspects() {
   $("aspects").innerHTML = "";
   for (const key of ["food", "service", "ambience"]) {
